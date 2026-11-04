@@ -1,0 +1,8 @@
+.Rproj.user/
+.RData
+.Rhistory
+.Ruserdata
+
+datos/crudos/*
+datos/limpios/*
+resultados/tablas/*

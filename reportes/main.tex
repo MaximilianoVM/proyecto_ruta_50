@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{setspace}
+\onehalfspacing 
+\usepackage[a4paper, left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[spanish]{babel}
+\usepackage{graphicx} 
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{adjustbox}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+\lstset{
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Configuración de colores y estilo para el código R
+\lstset{ 
+    language=R,                     % El lenguaje del código
+    basicstyle=\ttfamily\footnotesize, % Estilo de la fuente
+    keywordstyle=\color{blue},      % Color de las palabras clave
+    stringstyle=\color{red},        % Color de los textos
+    commentstyle=\color{green!60!black}, % Color de los comentarios
+    numbers=left,                   % Números de línea a la izquierda
+    numberstyle=\tiny\color{gray},  % Estilo de los números
+    stepnumber=1,                   % Numerar cada línea
+    breaklines=true,                % Romper líneas largas
+    frame=single,                   % Agregar un marco alrededor del código
+    backgroundcolor=\color{gray!5}, % Color de fondo suave
+    showstringspaces=false          % No mostrar espacios en las cadenas de texto
+}
+
+% --- CONFIGURACIÓN DE FANCYHDR ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % Limpia la configuración actual
+
+% Definir encabezado
+\lhead{Diagnóstico situacional} % Texto a la izquierda
+\rhead{Proyecto integrador} % Texto a la derecha
+
+% Definir pie de página
+\cfoot{Página \thepage} % Número de página al centro
+
+% Modificar el grosor de las líneas separadoras (opcional)
+\renewcommand{\headrulewidth}{0.4pt} % Línea del encabezado
+\renewcommand{\footrulewidth}{0.4pt} % Línea del pie de página (pon 0pt si no quieres línea)
+% ----------------------------------
+
+%Para el índice
+\usepackage{imakeidx}
+\makeindex[columns=3, title=Alphabetical Index, intoc]
+
+\begin{document}
+% ----------------- PORTADA -----------------
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    % Logo de la institución
+    \includegraphics[width=0.4\linewidth]{logo-cimat-ags.jpg}
+    
+    \vspace{1.5cm}
+    {\large \textbf{Sede Aguascalientes}}\\[1 cm]
+    {\large \textbf{MAESTRÍA EN MODELACIÓN Y OPTIMIZACIÓN DE PROCESOS }}\\[1cm]
+    {\large \textbf{Modelación Estadística I}}\\[1cm]
+    {\Huge \textbf{Diagnóstico situacional del transporte público urbano ruta $50$ en Aguascalientes}}\\[1cm]
+    {\large \textbf{Profesores:}}\\[0.5cm]
+    {\Large Dr. Humberto Martínez Bautista}\\[1 cm]
+    {\Large Dr. Magín Zúñiga Estrada}\\[1 cm]
+    {\large \textbf{Presenta:}}\\[0.5cm]
+    {\Large Alumnos de primer semestre del periodo 2026-2}\\[1 cm]
+    {\large 5 de noviembre del 2026}\\[1 cm]
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introducción}
+El transporte público urbano en Aguascalientes representa un componente crítico para la movilidad de miles de ciudadanos que diariamente dependen de él para acceder a sus centros de trabajo, instituciones educativas y servicios esenciales. En este contexto, la Ruta 50 emerge como un caso de estudio particularmente relevante, no solo por su extensa cobertura territorial que conecta zonas estratégicas de la ciudad, sino también por haber sido objeto de recientes intervenciones gubernamentales orientadas a la modernización de su flota y la optimización de sus tiempos de recorrido. A pesar de estos esfuerzos, la evaluación de la calidad del servicio desde la perspectiva del usuario final sigue siendo un área que requiere un análisis profundo y desagregado, pues las métricas globales de satisfacción a menudo ocultan realidades heterogéneas que varían significativamente según el contexto de cada viaje.
+
+El interés principal de esta investigación es determinar el nivel de satisfacción de las personas usuarias del transporte público urbano en Aguascalientes, tomando como eje articulador a la Ruta 50, y analizar cómo esta percepción varía en función de una serie de dimensiones críticas. Se busca examinar si la satisfacción es uniforme o si, por el contrario, se fragmenta según las características específicas del usuario; del servicio prestado, las regiones de la ciudad por las que transita la ruta, los horarios en que se realizan los desplazamientos y los perfiles sociodemográficos de los pasajeros. %Este enfoque desagregado es fundamental, ya que la evidencia disponible sugiere que, si bien los usuarios de Aguascalientes valoran positivamente ciertos atributos como el trato del operador y la accesibilidad de las unidades, persisten deficiencias estructurales significativas en aspectos clave como la frecuencia de paso y la cobertura efectiva de las rutas .
+
+La relevancia de estudiar la Ruta 50 radica en su carácter dual: por un lado, los datos oficiales la posicionan como una de las rutas con menor tiempo de espera promedio en el sistema, lo que teóricamente debería traducirse en altos niveles de satisfacción ; sin embargo, análisis previos han señalado problemas de insuficiencia de unidades y saturación en tramos específicos como la Avenida Siglo XXI. Además, la reciente incorporación de autobuses híbridos y a gas natural destinados prioritariamente a esta ruta introduce una variable de análisis pertinente: ¿mejora la calidad del servicio percibida por los usuarios tras la renovación de la flota, o persisten las inconformidades relacionadas con la frecuencia y la comodidad? . Al contrastar la experiencia de la Ruta 50 con las tendencias generales del sistema, este estudio pretende generar evidencia que permita distinguir entre mejoras cosméticas y transformaciones estructurales en la calidad del transporte.
+
+%Finalmente, el análisis de la variación de la satisfacción según perfiles de usuarios y horarios busca visibilizar las desigualdades internas del sistema. La literatura indica que las mujeres utilizan más el transporte público y, al mismo tiempo, perciben mayores niveles de inseguridad en él ; asimismo, los usuarios de menores ingresos que residen en la periferia enfrentan tiempos de espera más prolongados y mayores costos de oportunidad . Por lo tanto, evaluar la Ruta 50 desde una perspectiva interseccional permitirá identificar si las mejoras en la frecuencia y la flota han beneficiado equitativamente a todos los segmentos de la población o si, por el contrario, han profundizado brechas preexistentes. En última instancia, este trabajo aspira a contribuir al diseño de políticas de movilidad más efectivas y socialmente justas para Aguascalientes.
+
+\section{Pregunta y Objetivos}
+
+\subsection{Pregunta principal.}
+¿Cúal es el nivel de satisfacción de las personas usuarias del transporte público urbano de la ruta $50$ de Aguascalientes y cómo varía según las características del servicio, regiones, horarios y perfiles de usuarios?
+\subsection{Objetivos.}
+\textbf{Objetivo general.} Estimar y modelar la satisfacción de los usuarios, identificar diferencias relevantes y producir recomendaciones sustentadas en evidencia. \\
+\textbf{Objetivos específicos. }
+\begin{enumerate}
+    \item  Estimar la distribución de la satisfacción global. 
+    \item Comparar horarios pico/no pico y regiones de la ruta $50$. 
+    \item Estudiar asociaciones con espera, saturación, seguridad, comodidad, información y trato. 
+    \item Explorar desigualdades por sexo, edad, discapacidad, ocupación y frecuencia de uso. 
+    \item Aplicar Bernoulli, binomial, regresión logística y Poisson.
+    \item Formular oportunidades de mejora con limitaciones explícitas.
+    
+\end{enumerate}
+
+\section{Propósito}
+
+\section{Presentación de los datos}
+
+\section{Resultados}
+
+\section{Discusión}
+
+\section{Conclusión}
+
+\newpage
+\section*{Anexos}
+\subsection{Encuesta}
+Para la recopilación de los datos se realizo la siguiente encuesta, la cual se categorizo de la siguiente manera:
+\begin{itemize}
+    \item \textbf{Tipo de fuente}:
+    \item  \textbf{Entrevistador}:
+    \item \textbf{Sentido de la ruta}
+    \item \textbf{Edad}
+    \item \textbf{Motivo de viaje}
+        \begin{itemize}
+            \item Trabajo
+            \item Estudio
+            \item Compras
+            \item Trámite o salud
+            \item Recreación o visita
+            \item Regreso a casa
+            \item Gimsasio
+            
+        \end{itemize}
+    \item \textbf{Numero de días a la semana que utiliza el camión} (de 1 a 7)
+    \item \textbf{Cantidad de transbordos}
+    \item \textbf{Tipo de tarifa}: (Si / No)
+        \begin{itemize}
+            \item General
+            \item Estudiante
+            \item Adulto mayor
+            \item Embarazada
+            \item Persona con discapacidad
+            \item Otra
+        \end{itemize}
+    \item \textbf{}
+    
+\end{itemize}
+\end{document}
