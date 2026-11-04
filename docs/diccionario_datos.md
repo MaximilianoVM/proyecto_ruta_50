@@ -5,7 +5,7 @@ Generado por `scripts/01_limpieza.R` a partir de
 (encuesta de diagnóstico de transporte, Ruta 50, Aguascalientes).
 
 - **Unidad de observación:** una respuesta de encuesta.
-- **Tamaño:** 139 filas × 30 columnas (de 146 respuestas crudas se excluyen 7, ver [Filtros de exclusión](#filtros-de-exclusión)).
+- **Tamaño:** 138 filas × 32 columnas (de 146 respuestas crudas se excluyen 8, ver [Filtros de exclusión](#filtros-de-exclusión)).
 - **Código `[x.y]`:** número de la pregunta en el formulario. Las columnas se localizan por ese prefijo, no por posición (salvo `ts`).
 - Las celdas vacías o `"NA"` del CSV se leen como `NA`.
 
@@ -17,36 +17,38 @@ Generado por `scripts/01_limpieza.R` a partir de
 | `fuente` | [0.1] Fuente (viene premarcada) | texto | `P1`, `P2`, `P3` = puntos de entrevista presencial; `Enlace` = formulario autoaplicado por enlace. |
 | `ruta_txt` | [0.3] ¿En qué ruta fue su viaje más reciente? (ej. 01, 50) | entero | Solo se pregunta en autoaplicada; `NA` en entrevistas (124). |
 | `ultimo_viaje` | [0.4] ¿Cuándo fue su último viaje en esa ruta? | texto | `Hoy`, `Esta semana`; `NA` en entrevistas. (`Hace más de un mes` se excluye.) |
+| `encuestador` | [0.2] Entrevistador (lo registra el encuestador) | texto | `AJM` (29), `JBG` (19), `JPA` (13), `MAC` (21), `MVM` (10), `RCP` (15), `SHM` (16); `NA` en autoaplicada (15). Se usa para corregir `inc_inseg` (ver [Correcciones](#correcciones-de-captura-sección-6)). |
 | `s_encuestador` | [0.5] Sentido (lo registra el encuestador) | texto | `Norte → Sur`, `Sur →Norte`; `NA` en autoaplicada. |
 | `s_usuario` | [0.6] ¿Hacia dónde iba el camión en ese viaje? | texto | `Hacia el norte (rumbo a Av. Gerónimo de la Cueva)`, `Hacia el sur (rumbo a Blvd. José Ma. Chávez / Av. Tecnológico)`; `NA` en entrevistas. |
 | `consentimiento` | [1.1] ¿Acepta participar en la encuesta? | texto | Siempre `Sí, acepto` en los datos limpios. |
 | `mayor_edad` | [1.2] ¿Tiene 18 años o más? | texto | Siempre `Sí` en los datos limpios. |
-| `motivo` | [2.1] Motivo del viaje | texto | `Trabajo` (95), `Estudio` (19), `Regreso a casa` (18), `Compras`, `Trámites o salud`, `Gimnasio`, `Recreación o visita`. |
-| `tarifa` | [2.4] Tipo de tarifa | texto | `General` (119), `Estudiante` (17), `Adulto mayor` (3). |
+| `motivo` | [2.1] Motivo del viaje | texto | `Trabajo` (94), `Estudio` (19), `Regreso a casa` (18), `Compras`, `Trámites o salud`, `Gimnasio`, `Recreación o visita`. |
+| `tarifa` | [2.4] Tipo de tarifa | texto | `General` (118), `Estudiante` (17), `Adulto mayor` (3). |
 | `espera` | [3.1] Espera percibida en minutos | numérico (min) | 3–60, mediana 15. |
 | `duracion` | [3.3] Duración total del viaje en minutos | numérico (min) | 1–120, mediana 30. |
 | `saturacion` | [3.4] Saturación | entero 1–5 | 1 = Vacío, muchos asientos libres · 2 = Algunos asientos libres · 3 = Todos sentados, nadie de pie · 4 = Algunas personas de pie · 5 = Lleno, difícil moverse. Mediana 5. |
 | `satisfaccion` | [4.1] En general, ¿qué tan satisfecho(a) está con el servicio utilizado en este viaje? | entero 1–5 | 1 = Muy insatisfecho · 2 = Insatisfecho · 3 = Neutral · 4 = Satisfecho · 5 = Muy satisfecho. |
-| `viajes` | [6.1] viajes (sección «Últimos 30 días») | numérico | Número de viajes en los **últimos 30 días**. Ver [Sección 6](#sección-6-últimos-30-días). |
-| `inc_retraso` | [6.2] retrasos (sección «Últimos 30 días») | numérico | Número de retrasos en los últimos 30 días. |
-| `inc_omision` | [6.3] omisiones de parada (sección «Últimos 30 días») | numérico | Número de omisiones de parada en los últimos 30 días. |
-| `inc_inseg` | [6.4] inseguridad o acoso (sección «Últimos 30 días») | numérico | Número de eventos de inseguridad o acoso en los últimos 30 días. |
-| `prioridad` | [7.1] Prioridad de mejora | texto | **Normalizada** (ver abajo). Categorías del formulario: `Menor tiempo de espera` (37), `Menos saturación` (31), `Puntualidad` (21), `Tarifa` (6), `Información de rutas y horarios` (5), `Accesibilidad` (4), `Comodidad de las unidades` (2), `Limpieza` (2), `Trato del chofer` (2). `Ninguna` (12) agrupa a quienes no piden mejora. 2 `NA`. El resto (~20) son respuestas abiertas únicas, sin recodificar. |
-| `sexo` | [8.1] sexo | texto | `Hombre` (73), `Mujer` (66). Otras categorías se recodifican a `NA` (no hay ninguna en los datos limpios). |
+| `viajes` | [6.1] viajes (sección «Últimos 30 días») | numérico | Número de viajes en los **últimos 30 días**, 1–288, mediana 30. Sin `NA`. Los valores altos (hasta 288) son plausibles por la frecuencia de uso, ida y vuelta y transbordos. Ver [Sección 6](#sección-6-últimos-30-días). |
+| `inc_retraso` | [6.2] retrasos (sección «Últimos 30 días») | numérico | Número de retrasos en los últimos 30 días. Centinelas → `NA` (9 `NA`). |
+| `inc_omision` | [6.3] omisiones de parada (sección «Últimos 30 días») | numérico | Número de omisiones de parada en los últimos 30 días. Centinelas → `NA` (14 `NA`). |
+| `inc_inseg` | [6.4] inseguridad o acoso (sección «Últimos 30 días») | numérico | Número de eventos de inseguridad o acoso en los últimos 30 días. Primeros 1 corregidos a 0 y centinelas → `NA` (29 `NA`). |
+| `prioridad` | [7.1] Prioridad de mejora | texto | **Normalizada** (ver abajo). Categorías del formulario: `Menor tiempo de espera` (37), `Menos saturación` (31), `Puntualidad` (21), `Tarifa` (6), `Información de rutas y horarios` (5), `Accesibilidad` (4), `Comodidad de las unidades` (2), `Limpieza` (2), `Trato del chofer` (2). `Ninguna` (12) agrupa a quienes no piden mejora. 1 `NA`. El resto (~20) son respuestas abiertas únicas, sin recodificar. |
+| `sexo` | [8.1] sexo | texto | `Hombre` (72), `Mujer` (66). Otras categorías se recodifican a `NA` (no hay ninguna en los datos limpios). |
 | `edad` | [8.2] edad | numérico (años) | 18–69, mediana 38. |
-| `ocupacion` | [8.3] ocupación | texto | `Empleado(a)` (96), `Estudiante` (28), `Trabajo por cuenta propia` (5), y ocupaciones abiertas con 1–2 casos. |
-| `acceso_auto` | [8.5] acceso a auto | texto | `No` (114), `Sí` (25). |
+| `ocupacion` | [8.3] ocupación | texto | `Empleado(a)` (95), `Estudiante` (28), `Trabajo por cuenta propia` (5), y ocupaciones abiertas con 1–2 casos. |
+| `acceso_auto` | [8.5] acceso a auto | texto | `No` (114), `Sí` (24). |
 
 ## Variables derivadas
 
 | Variable | Cálculo | Valores |
 |---|---|---|
-| `modo` | `fuente` ∈ {P1, P2, P3} → entrevista; si no, autoaplicada | `entrevista` (124), `autoaplicada` (15) |
+| `modo` | `fuente` ∈ {P1, P2, P3} → entrevista; si no, autoaplicada | `entrevista` (123), `autoaplicada` (15) |
 | `ruta` | 50 si `modo` es entrevista; si no, el primer número de `ruta_txt` | 50 en todos los datos limpios |
-| `turno` | hora de `ts` < 12 → mañana; si no, tarde | `mañana` (77), `tarde` (62) |
-| `sentido` | Prioriza `s_encuestador`; si es `NA`, usa `s_usuario` **invirtiendo** la lectura: "Hacia el norte" → `S→N`, "Hacia el sur" → `N→S` (el camión va hacia ese destino, el viaje parte del extremo opuesto) | `N→S` (71), `S→N` (68) |
-| `satisfecho` | `1` si `satisfaccion` ≥ 4, `0` en otro caso (variable respuesta Y de la regresión logística) | 0/1; proporción de 1 = 0.568 |
-| `incidentes` | `inc_retraso + inc_omision + inc_inseg` (suma de eventos en los últimos 30 días) | numérico; hereda los valores atípicos de las tres columnas |
+| `turno` | hora de `ts` < 12 → mañana; si no, tarde | `mañana` (77), `tarde` (61) |
+| `sentido` | Prioriza `s_encuestador`; si es `NA`, usa `s_usuario` **invirtiendo** la lectura: "Hacia el norte" → `S→N`, "Hacia el sur" → `N→S` (el camión va hacia ese destino, el viaje parte del extremo opuesto) | `N→S` (71), `S→N` (67) |
+| `satisfecho` | `1` si `satisfaccion` ≥ 4, `0` en otro caso (variable respuesta Y de la regresión logística) | 0/1; proporción de 1 = 0.572 |
+| `incidentes` | `inc_retraso + inc_omision + inc_inseg` (suma de eventos en los últimos 30 días) | numérico; `NA` si cualquiera de las tres columnas es `NA` (35 filas). Sin `NA`: mediana 5, media 20.2, máx. 400. |
+| `encuesta_nula` | `TRUE` si `viajes` = 999 (el encuestador indicó que esa encuesta es nula) | `FALSE` en todos los datos limpios |
 | `motivo_exclusion` | Primer criterio de exclusión que cumple la fila | `NA` en todos los datos limpios (ver abajo) |
 
 ## Normalización de `prioridad`
@@ -65,7 +67,9 @@ En `scripts/01_limpieza.R`: se quitan espacios sobrantes (`str_squish`) y despu�
 3. `otra ruta` — `ruta` ausente o distinta de 50 (1 fila).
 4. `último viaje > 1 mes` — `ultimo_viaje` = `Hace más de un mes` (1 fila).
 
-Total: 146 respuestas → 139 válidas.
+5. `encuesta nula (999)` — `viajes` = 999; según el encuestador esa encuesta es nula (1 fila).
+
+Total: 146 respuestas → 138 válidas.
 
 ## Notas sobre el diseño del formulario
 
@@ -90,24 +94,28 @@ Las cuatro preguntas `[6.1]`–`[6.4]` están bajo el encabezado **«Últimos 30
 («viajes», «retrasos», «omisiones de parada», «inseguridad o acoso»), así que se interpretan como **conteos de eventos en los 30 días previos a la encuesta**.
 `incidentes` es la suma de los tres últimos.
 
-Valores sospechosos en los datos limpios (n = 139; en el formulario completo de 146 los conteos son ligeramente mayores):
+### Correcciones de captura (sección 6)
 
-| Variable | 99 | 666 | 999 | 1000 | 9999 | otros muy altos |
-|---|---|---|---|---|---|---|
-| `viajes` | 2 | 0 | 1 | 0 | 0 | 21 con >60 viajes (hasta 288) |
-| `inc_retraso` | 3 | 4 | 3 | 0 | 0 | 5 con >60 (100, 160, 200…) |
-| `inc_omision` | 9 | 1 | 3 | 2 | 0 | 3 con >60 (80, 200…) |
-| `inc_inseg` | 14 | 7 | 4 | 4 | 1 | — |
+Se aplican en `scripts/01_limpieza.R` antes de calcular variables derivadas, según lo informado por el equipo de levantamiento:
 
-- Los valores 99, 666, 999, 1000 y 9999 son redondos/repetidos y casi todos están en los incidentes, sobre todo en `inc_inseg`;
-  **parecen códigos de «no sé / no contestó» o relleno, pero el formulario no lo indica**; es una hipótesis por confirmar con el equipo de levantamiento.
-- `viajes` > 60 en 30 días implica más de 2 viajes diarios; son posibles (sobre todo con transbordos), pero 210, 211 y 288 son poco creíbles.
-- 13 filas tienen `retrasos` > `viajes`, 24 `omisiones` > `viajes` y 29 `inseguridad` > `viajes` (entre las que tienen `viajes` < 900). Si los incidentes fueran
-  «de esos viajes» esto sería imposible; puede deberse a que se contaron también viajes de otras rutas o a los códigos anteriores.
+1. **Ceros capturados como 1 en `inc_inseg` ([6.4]).** Al inicio del levantamiento la pregunta exigía un valor ≥ 1 y no permitía registrar 0, por lo que los
+   encuestadores anotaron 1 en lugar de 0. Por encuestador, en orden de hora (`ts`) y sin contar filas vacías, la **racha inicial de valores 1 se corrige a 0**
+   (se detiene en el primer valor distinto de 1). Efecto: AJM 2 filas, JPA 3, SHM 2, RCP 1, JBG 2. **MAC no se corrige**: su primer valor es 2, lo que rompe la racha
+   (2, 1, 1, 1, 1 quedan tal cual). Las respuestas autoaplicadas no se corrigen (no tienen encuestador).
+2. **Centinelas → `NA`.** Cuando no se pudo capturar el dato, cada encuestador tecleó su propio código: 99 (MAC, JPA, SHM), 666 (RCP), 999 y 9999 (AJM), 1000 (JBG).
+   Aparecen en `inc_retraso`, `inc_omision` e `inc_inseg` (por un malentendido la instrucción se aplicó a los tres campos). Los códigos 99, 666, 999, 1000 y 9999 pasan a `NA`
+   en esas tres columnas. Es una lista exacta: valores altos que no son códigos (retrasos 100, 160, 200; omisiones 200) se conservan porque se consideran verosímiles.
+3. **Encuesta nula.** Una fila tiene `viajes` = 999; el encuestador indicó que toda esa encuesta es nula y se excluye (`encuesta nula (999)`).
 
-**Pendiente:** decidir cómo tratar estos valores (p. ej. recodificar 99/666/999/1000/9999 a `NA` y revisar los conteos extremos) antes de usar `viajes` e `incidentes` en `06_poisson.R`.
+`NA` resultantes: `inc_retraso` 9, `inc_omision` 14, `inc_inseg` 29, `incidentes` 35 (de 138 filas).
+
+### Valores altos que se conservan
+
+- `viajes` > 60 en 30 días (23 filas, hasta 210, 211 y 288) se consideran plausibles: uso de 5–7 días por semana, ida y vuelta y transbordos
+  (los viajes pueden incluir tramos de otras rutas además de la 50).
+- Algunas filas tienen `retrasos`, `omisiones` o `inseguridad` mayores que `viajes`; no se corrigen. Puede deberse al conteo de tramos de otras rutas.
 
 ## Advertencias
 
-- **Valores atípicos en `[6.x]`:** ver la sección anterior. No se limpian en el script. Distorsionan `incidentes` (media 281.6, mediana 11) y cualquier modelo de conteo.
+- **Sección 6:** `inc_retraso`, `inc_omision`, `inc_inseg` e `incidentes` tienen `NA` por centinelas (ver [Correcciones](#correcciones-de-captura-sección-6)); hay que decidir cómo tratarlos en `06_poisson.R` (casos completos u otra estrategia). La corrección de 1 → 0 depende de la regla de racha inicial por encuestador (MAC sin corregir).
 - Una sola ruta (50) y un solo día de levantamiento (2026-11-03).

@@ -24,6 +24,7 @@ datos <- data.frame(
   fuente         = col("0.1"),
   ruta_txt       = col("0.3"),
   ultimo_viaje   = col("0.4"),
+  encuestador    = col("0.2"),
   s_encuestador  = col("0.5"),
   s_usuario      = col("0.6"),
   consentimiento = col("1.1"),
@@ -44,6 +45,35 @@ datos <- data.frame(
   ocupacion      = col("8.3"),
   acceso_auto    = col("8.5")
 )
+
+# --- Correcciones por errores de captura en la sección 6 ----------------------
+# 1) Al inicio del levantamiento [6.4] exigía >= 1 y no permitía registrar 0, así
+#    que cada encuestador capturó 1 en lugar de 0 en sus primeras entrevistas.
+#    Por encuestador y en orden de hora, la racha inicial de 1 (sin contar filas
+#    vacías) se corrige a 0.
+corrige_ceros <- function(x) {
+  for (i in which(!is.na(x))) {
+    if (x[i] == 1) x[i] <- 0 else break
+  }
+  x
+}
+
+# 2) Centinelas: cada encuestador tecleó su propio código cuando no se pudo
+#    capturar el dato (99, 666, 999, 1000, 9999). Aplica a retrasos, omisiones e
+#    inseguridad; se recodifican a NA.
+centinelas <- c(99, 666, 999, 1000, 9999)
+a_na <- function(x) ifelse(x %in% centinelas, NA_real_, x)
+
+datos <- datos |>
+  arrange(ts) |>
+  group_by(encuestador) |>
+  mutate(inc_inseg = if (all(is.na(encuestador))) inc_inseg else corrige_ceros(inc_inseg)) |>
+  ungroup() |>
+  mutate(
+    # encuesta nula según el encuestador: viajes = 999 (se excluye más abajo)
+    encuesta_nula = viajes %in% 999,
+    across(c(inc_retraso, inc_omision, inc_inseg), a_na)
+  )
 
 datos <- datos |>
   mutate(
@@ -71,6 +101,7 @@ datos <- datos |>
       mayor_edad != "Sí" | is.na(mayor_edad)                 ~ "menor de edad",
       is.na(ruta) | ruta != 50                               ~ "otra ruta",
       ultimo_viaje %in% "Hace más de un mes"                 ~ "último viaje > 1 mes",
+      encuesta_nula                                          ~ "encuesta nula (999)",
       TRUE ~ NA_character_
     )
   )
